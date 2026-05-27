@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marciano Finanças</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070709;
+    --surface: #0f0f14;
+    --surface2: #16161e;
+    --surface3: #1e1e28;
+    --green: #00ff87;
+    --green-dim: #00cc6a;
+    --green-glow: rgba(0,255,135,0.15);
+    --gold: #f5c842;
+    --gold-dim: #c9a030;
+    --red: #ff4455;
+    --orange: #ff8c00;
+    --white: #f0f0f5;
+    --muted: #6b6b80;
+    --border: rgba(255,255,255,0.06);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 30%, rgba(0,255,135,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 20%, rgba(245,200,66,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 10%, rgba(0,255,135,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 75%, rgba(245,200,66,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Layout */
+  .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-mark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .logo-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  .nav { padding: 20px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { color: var(--white); background: var(--surface2); }
+  .nav-item.active {
+    color: var(--green);
+    background: var(--green-glow);
+    border: 1px solid rgba(0,255,135,0.15);
+  }
+  .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .club-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    color: #000;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .club-btn:hover { opacity: 0.9; }
+
+  /* Main content */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    padding: 32px;
+    min-height: 100vh;
+  }
+
+  /* Page header */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* Screen */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards grid */
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(255,255,255,0.12); }
+  .card.highlight { border-color: rgba(0,255,135,0.2); background: linear-gradient(135deg, var(--surface), rgba(0,255,135,0.04)); }
+  .card.gold-card { border-color: rgba(245,200,66,0.2); background: linear-gradient(135deg, var(--surface), rgba(245,200,66,0.04)); }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .card-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1;
+  }
+  .card-value.green { color: var(--green); }
+  .card-value.red { color: var(--red); }
+  .card-value.gold { color: var(--gold); }
+
+  .card-change {
+    font-size: 12px;
+    margin-top: 8px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .card-change.up { color: var(--green); }
+  .card-change.down { color: var(--red); }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 6px;
+    background: var(--surface3);
+    border-radius: 99px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.8s ease;
+  }
+  .progress-fill.green { background: linear-gradient(90deg, var(--green-dim), var(--green)); }
+  .progress-fill.gold { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+  .progress-fill.red { background: linear-gradient(90deg, #cc2233, var(--red)); }
+  .progress-fill.orange { background: linear-gradient(90deg, #cc6600, var(--orange)); }
+
+  /* Two column layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .full-col { margin-bottom: 24px; }
+
+  /* Chart container */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+  }
+  canvas { display: block; }
+
+  /* Transactions */
+  .tx-list { display: flex; flex-direction: column; gap: 2px; }
+  .tx-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .tx-item:hover { border-color: var(--border); background: var(--surface2); }
+  .tx-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .tx-icon.income { background: rgba(0,255,135,0.12); }
+  .tx-icon.expense { background: rgba(255,68,85,0.12); }
+  .tx-info { flex: 1; }
+  .tx-name { font-size: 14px; font-weight: 500; }
+  .tx-cat { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .tx-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .tx-amount.income { color: var(--green); }
+  .tx-amount.expense { color: var(--red); }
+  .tx-date { font-size: 11px; color: var(--muted); }
+
+  /* Budget items */
+  .budget-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 10px;
+  }
+  .budget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .budget-cat { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .budget-values { font-family: 'DM Mono', monospace; font-size: 13px; }
+  .budget-spent { color: var(--white); }
+  .budget-limit { color: var(--muted); }
+
+  /* Missions */
+  .mission-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .mission-card:hover { border-color: rgba(0,255,135,0.2); }
+  .mission-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .mission-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+  .mission-status {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+    padding: 4px 10px; border-radius: 99px;
+  }
+  .mission-status.on-track { background: rgba(0,255,135,0.12); color: var(--green); }
+  .mission-status.at-risk { background: rgba(255,140,0,0.12); color: var(--orange); }
+  .mission-status.done { background: rgba(245,200,66,0.12); color: var(--gold); }
+  .mission-values { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; }
+  .mission-current { font-family: 'DM Mono', monospace; font-size: 18px; color: var(--green); font-weight: 500; }
+  .mission-target { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
+  .mission-deadline { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  /* Simulators */
+  .sim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .sim-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .sim-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .form-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .form-input:focus { border-color: var(--green); }
+
+  .calc-btn {
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    text-transform: uppercase;
+  }
+  .calc-btn:hover { opacity: 0.9; }
+
+  .sim-result {
+    background: var(--surface2);
+    border: 1px solid rgba(0,255,135,0.2);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    margin-top: 16px;
+    display: none;
+  }
+  .sim-result.show { display: block; animation: fadeUp 0.3s ease; }
+  .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .result-item { text-align: center; }
+  .result-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .result-value { font-family: 'DM Mono', monospace; font-size: 18px; color: var(--green); font-weight: 500; }
+  .result-quote { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; font-style: italic; }
+
+  /* Add modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    width: 420px;
+    max-width: 95vw;
+    animation: fadeUp 0.25s ease;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    margin-bottom: 20px;
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+  .btn-cancel {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); border-radius: var(--radius-sm);
+    padding: 10px 18px; font-size: 13px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover { color: var(--white); }
+  .btn-save {
+    background: var(--green); color: #000; border: none;
+    border-radius: var(--radius-sm); padding: 10px 18px;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .btn-save:hover { opacity: 0.9; }
+
+  select.form-input { appearance: none; cursor: pointer; }
+
+  /* FAB */
+  .fab {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--green); color: #000;
+    width: 52px; height: 52px; border-radius: 50%;
+    border: none; cursor: pointer;
+    font-size: 24px; font-weight: 300;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 24px rgba(0,255,135,0.4);
+    transition: all 0.2s;
+    z-index: 50;
+  }
+  .fab:hover { transform: scale(1.08); box-shadow: 0 0 32px rgba(0,255,135,0.5); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 20px; width: fit-content; }
+  .tab {
+    padding: 8px 16px; border-radius: 7px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--muted);
+    transition: all 0.2s;
+  }
+  .tab.active { background: var(--surface3); color: var(--white); }
+
+  /* Alerts */
+  .alert {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,68,85,0.08);
+    border: 1px solid rgba(255,68,85,0.2);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px; margin-bottom: 8px;
+    font-size: 13px; color: var(--red);
+  }
+
+  /* Donut chart */
+  .donut-wrap { position: relative; display: flex; align-items: center; gap: 24px; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { color: var(--muted); flex: 1; }
+  .legend-value { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+  /* Wealth items */
+  .wealth-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .wealth-item:last-child { border-bottom: none; }
+  .wealth-name { font-size: 14px; }
+  .wealth-inst { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .wealth-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px; font-weight: 500;
+  }
+  .wealth-val.asset { color: var(--green); }
+  .wealth-val.liability { color: var(--red); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 99px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 90px; right: 28px;
+    background: var(--surface);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 12px 18px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 0 20px rgba(0,255,135,0.2);
+    z-index: 300; display: none;
+    animation: fadeUp 0.3s ease;
+  }
+  .toast.show { display: block; }
+
+  /* Mobile */
+  .hamburger { display: none; position: fixed; top: 16px; left: 16px; z-index: 200; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; cursor: pointer; font-size: 18px; }
+  .overlay-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 80px 16px 100px; }
+    .hamburger { display: block; }
+    .overlay-bg.open { display: block; }
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr; }
+    .fab { bottom: 20px; right: 20px; }
+  }
+  @media (max-width: 480px) {
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-action {
+    font-size: 12px; color: var(--green); cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-weight: 400;
+  }
+  .section-action:hover { text-decoration: underline; }
+
+  .empty-state {
+    text-align: center; padding: 48px 24px;
+    color: var(--muted);
+  }
+  .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; line-height: 1.6; }
+  .empty-state .quote { font-style: italic; color: var(--green); margin-top: 8px; font-size: 13px; }
+
+  .patrimonio-total {
+    text-align: center;
+    padding: 28px;
+    background: linear-gradient(135deg, var(--surface), rgba(0,255,135,0.06));
+    border: 1px solid rgba(0,255,135,0.2);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+  }
+  .patrimonio-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .patrimonio-value { font-family: 'DM Mono', monospace; font-size: 40px; color: var(--green); font-weight: 500; }
+  .patrimonio-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<!-- Hamburger -->
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="overlay-bg" id="overlayBg" onclick="toggleSidebar()"></div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-mark">🛸 Marciano Finanças</div>
+      <div class="logo-sub">MARCIANO NA BOLSA</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active" onclick="showScreen('dashboard', this)">
+        <span class="nav-icon">🪐</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showScreen('movimentacoes', this)">
+        <span class="nav-icon">↕️</span> Movimentações
+      </div>
+      <div class="nav-item" onclick="showScreen('orcamento', this)">
+        <span class="nav-icon">🎯</span> Controle de Gastos
+      </div>
+      <div class="nav-item" onclick="showScreen('patrimonio', this)">
+        <span class="nav-icon">💎</span> Patrimônio
+      </div>
+      <div class="nav-item" onclick="showScreen('missoes', this)">
+        <span class="nav-icon">🚀</span> Missões
+      </div>
+      <div class="nav-item" onclick="showScreen('simuladores', this)">
+        <span class="nav-icon">🧮</span> Central de Cálculos
+      </div>
+      <div class="nav-item" onclick="showScreen('relatorios', this)">
+        <span class="nav-icon">📊</span> Extrato da Missão
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="club-btn">⭐ Clube do Lucro</button>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="screen active" id="screen-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Bom dia, Marciano 👋</div>
+          <div class="page-subtitle" id="today-date">Carregando data...</div>
+        </div>
+      </div>
+
+      <div class="cards-grid" style="grid-template-columns: repeat(3,1fr)">
+        <div class="card highlight">
+          <div class="card-label">Patrimônio do Marciano</div>
+          <div class="card-value green" id="dash-patrimonio">R$ 47.320</div>
+          <div class="card-change up">↑ +8,3% este mês</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Saldo do Mês</div>
+          <div class="card-value" id="dash-saldo">R$ 1.840</div>
+          <div class="card-change up">↑ Receitas − Despesas</div>
+        </div>
+        <div class="card gold-card">
+          <div class="card-label">Taxa de Poupança</div>
+          <div class="card-value gold">34,6%</div>
+          <div class="card-change up" style="color:var(--gold)">↑ da renda economizada</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-label">Blindagem Financeira (Reserva de Emergência)</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="card-value">R$ 9.200</div>
+          <span style="font-size:13px;color:var(--muted)">Meta: R$ 18.000 · 51%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill green" style="width:51%"></div></div>
+      </div>
+
+      <div class="alert">⚠️ Lazer ultrapassou o orçamento em R$ 230 este mês</div>
+
+      <div class="two-col" style="margin-top:16px">
+        <div class="chart-card">
+          <div class="chart-title">Evolução do Patrimônio — 12 meses</div>
+          <canvas id="lineChart" height="160"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Gastos por Categoria</div>
+          <div class="donut-wrap" style="margin-top:8px">
+            <canvas id="donutChart" width="140" height="140"></canvas>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#00ff87"></div><span class="legend-label">Moradia</span><span class="legend-value">R$ 1.800</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#f5c842"></div><span class="legend-label">Alimentação</span><span class="legend-value">R$ 980</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#6b8cff"></div><span class="legend-label">Transporte</span><span class="legend-value">R$ 420</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#ff4455"></div><span class="legend-label">Lazer</span><span class="legend-value">R$ 730</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div><span class="legend-label">Outros</span><span class="legend-value">R$ 450</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="full-col">
+        <div class="section-title">Últimas Movimentações <span class="section-action" onclick="showScreen('movimentacoes', document.querySelectorAll('.nav-item')[1])">Ver todas →</span></div>
+        <div class="tx-list" id="dash-tx-list"></div>
+      </div>
+    </div>
+
+    <!-- MOVIMENTAÇÕES -->
+    <div class="screen" id="screen-movimentacoes">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Movimentações</div>
+          <div class="page-subtitle">Tudo que entra e sai — sem surpresa</div>
+        </div>
+        <button class="calc-btn" onclick="openModal('tx')">+ Novo Lançamento</button>
+      </div>
+      <div class="cards-grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
+        <div class="card"><div class="card-label">Total de Entradas</div><div class="card-value green" id="total-receitas">R$ 5.320</div></div>
+        <div class="card"><div class="card-label">Total de Saídas</div><div class="card-value red" id="total-despesas">R$ 3.480</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="section-title" style="margin-bottom:16px">Histórico do Mês</div>
+        <div class="tx-list" id="tx-list-full"></div>
+      </div>
+    </div>
+
+    <!-- ORÇAMENTO -->
+    <div class="screen" id="screen-orcamento">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Controle de Gastos</div>
+          <div class="page-subtitle">Saber onde vai o dinheiro é poder</div>
+        </div>
+      </div>
+      <div class="cards-grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
+        <div class="card"><div class="card-label">Total Orçado</div><div class="card-value">R$ 4.500</div></div>
+        <div class="card"><div class="card-label">Total Gasto</div><div class="card-value red">R$ 3.480</div></div>
+      </div>
+      <div id="budget-list"></div>
+    </div>
+
+    <!-- PATRIMÔNIO -->
+    <div class="screen" id="screen-patrimonio">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Patrimônio</div>
+          <div class="page-subtitle">A foto completa de tudo que você tem e deve</div>
+        </div>
+      </div>
+      <div class="patrimonio-total">
+        <div class="patrimonio-label">Patrimônio do Marciano</div>
+        <div class="patrimonio-value">R$ 47.320</div>
+        <div class="patrimonio-sub">Ativos R$ 62.320 · Passivos R$ 15.000</div>
+      </div>
+      <div class="two-col">
+        <div class="chart-card">
+          <div class="section-title">Ativos 💚</div>
+          <div id="assets-list"></div>
+        </div>
+        <div class="chart-card">
+          <div class="section-title">Passivos 🔴</div>
+          <div id="liabilities-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSÕES -->
+    <div class="screen" id="screen-missoes">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Missões</div>
+          <div class="page-subtitle">Objetivos com prazo, progresso e clareza</div>
+        </div>
+        <button class="calc-btn" onclick="openModal('mission')">+ Nova Missão</button>
+      </div>
+      <div id="missions-list"></div>
+    </div>
+
+    <!-- SIMULADORES -->
+    <div class="screen" id="screen-simuladores">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Central de Cálculos</div>
+          <div class="page-subtitle">Clareza para decisões financeiras importantes</div>
+        </div>
+      </div>
+
+      <!-- Juros Compostos -->
+      <div class="sim-card">
+        <div class="sim-title">📈 Simulador de Juros Compostos</div>
+        <div class="sim-desc">Veja como seu dinheiro cresce com o tempo</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Aporte Inicial (R$)</label><input class="form-input" id="s1-inicial" type="number" placeholder="10000"></div>
+          <div class="form-group"><label class="form-label">Aporte Mensal (R$)</label><input class="form-input" id="s1-mensal" type="number" placeholder="500"></div>
+          <div class="form-group"><label class="form-label">Taxa de Juros (% ao ano)</label><input class="form-input" id="s1-taxa" type="number" placeholder="12"></div>
+          <div class="form-group"><label class="form-label">Prazo (anos)</label><input class="form-input" id="s1-prazo" type="number" placeholder="10"></div>
+        </div>
+        <button class="calc-btn" onclick="calcJuros()">Calcular</button>
+        <div class="sim-result" id="result-juros">
+          <div class="result-grid">
+            <div class="result-item"><div class="result-label">Valor Final</div><div class="result-value" id="r-final">—</div></div>
+            <div class="result-item"><div class="result-label">Total Investido</div><div class="result-value" id="r-investido" style="color:var(--gold)">—</div></div>
+            <div class="result-item"><div class="result-label">Rendimento</div><div class="result-value" id="r-rendimento">—</div></div>
+          </div>
+          <div class="result-quote" id="r-quote-juros"></div>
+        </div>
+      </div>
+
+      <!-- Independência Financeira -->
+      <div class="sim-card">
+        <div class="sim-title">🛸 Missão: Liberdade</div>
+        <div class="sim-desc">Liberdade financeira não é sorte. É matemática.</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Patrimônio Atual (R$)</label><input class="form-input" id="s2-patrimonio" type="number" placeholder="50000"></div>
+          <div class="form-group"><label class="form-label">Aporte Mensal (R$)</label><input class="form-input" id="s2-aporte" type="number" placeholder="1000"></div>
+          <div class="form-group"><label class="form-label">Rendimento Esperado (% ao ano)</label><input class="form-input" id="s2-rendimento" type="number" placeholder="10"></div>
+          <div class="form-group"><label class="form-label">Gasto Mensal Desejado (R$)</label><input class="form-input" id="s2-gasto" type="number" placeholder="5000"></div>
+        </div>
+        <button class="calc-btn" onclick="calcLiberdade()">Calcular</button>
+        <div class="sim-result" id="result-liberdade">
+          <div class="result-grid">
+            <div class="result-item"><div class="result-label">Patrimônio Necessário</div><div class="result-value" id="r-patrim">—</div></div>
+            <div class="result-item"><div class="result-label">Anos para Liberdade</div><div class="result-value" id="r-anos" style="color:var(--gold)">—</div></div>
+            <div class="result-item"><div class="result-label">Renda Passiva/mês</div><div class="result-value" id="r-renda">—</div></div>
+          </div>
+          <div class="result-quote" id="r-quote-lib"></div>
+        </div>
+      </div>
+
+      <!-- Quitação de Dívida -->
+      <div class="sim-card">
+        <div class="sim-title">💥 Simulador de Quitação de Dívida</div>
+        <div class="sim-desc">Veja quanto você economiza pagando mais rápido</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Valor da Dívida (R$)</label><input class="form-input" id="s3-divida" type="number" placeholder="20000"></div>
+          <div class="form-group"><label class="form-label">Taxa de Juros (% ao mês)</label><input class="form-input" id="s3-taxa" type="number" placeholder="2"></div>
+          <div class="form-group"><label class="form-label">Parcela Atual (R$)</label><input class="form-input" id="s3-parcela" type="number" placeholder="600"></div>
+          <div class="form-group"><label class="form-label">Nova Parcela (R$)</label><input class="form-input" id="s3-nova" type="number" placeholder="1000"></div>
+        </div>
+        <button class="calc-btn" onclick="calcDivida()">Calcular</button>
+        <div class="sim-result" id="result-divida">
+          <div class="result-grid">
+            <div class="result-item"><div class="result-label">Meses (parcela atual)</div><div class="result-value" id="r-meses-atual" style="color:var(--red)">—</div></div>
+            <div class="result-item"><div class="result-label">Meses (nova parcela)</div><div class="result-value" id="r-meses-novo">—</div></div>
+            <div class="result-item"><div class="result-label">Economia</div><div class="result-value" id="r-economia">—</div></div>
+          </div>
+          <div class="result-quote" id="r-quote-divida"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div class="screen" id="screen-relatorios">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Extrato da Missão</div>
+          <div class="page-subtitle">Seu desempenho financeiro em números</div>
+        </div>
+      </div>
+      <div class="cards-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+        <div class="card highlight"><div class="card-label">Receitas do Mês</div><div class="card-value green">R$ 5.320</div></div>
+        <div class="card"><div class="card-label">Despesas do Mês</div><div class="card-value red">R$ 3.480</div></div>
+        <div class="card gold-card"><div class="card-label">Taxa de Poupança</div><div class="card-value gold">34,6%</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:16px">
+        <div class="chart-title">Evolução Anual — Receitas vs. Despesas</div>
+        <canvas id="barChart" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="section-title" style="margin-bottom:0">Resumo do Mês</div>
+        <div style="margin-top:16px;font-size:14px;line-height:1.8;color:var(--muted)">
+          <div>📅 Período: <span style="color:var(--white)">Maio 2026</span></div>
+          <div>📈 vs. mês anterior: <span style="color:var(--green)">+12,4% no saldo</span></div>
+          <div>🏆 Categoria com maior gasto: <span style="color:var(--white)">Moradia (R$ 1.800)</span></div>
+          <div>💡 Categoria acima do orçamento: <span style="color:var(--red)">Lazer (+R$ 230)</span></div>
+          <div style="margin-top:16px;padding:16px;background:rgba(0,255,135,0.06);border:1px solid rgba(0,255,135,0.15);border-radius:10px;color:var(--green);font-style:italic">
+            "Mês encerrado no positivo. Você está no caminho."
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="openModal('tx')" title="Novo lançamento">+</button>
+
+<!-- Modal Lançamento -->
+<div class="modal-overlay" id="modal-tx">
+  <div class="modal">
+    <div class="modal-title">+ Novo Lançamento</div>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:span 2">
+        <label class="form-label">Tipo</label>
+        <select class="form-input" id="tx-tipo">
+          <option value="income">💚 Entrada (Receita)</option>
+          <option value="expense">🔴 Saída (Despesa)</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input" id="tx-valor" type="number" placeholder="0,00"></div>
+      <div class="form-group"><label class="form-label">Data</label><input class="form-input" id="tx-data" type="date"></div>
+      <div class="form-group" style="grid-column:span 2"><label class="form-label">Descrição</label><input class="form-input" id="tx-desc" type="text" placeholder="Ex: Salário, Supermercado..."></div>
+      <div class="form-group">
+        <label class="form-label">Categoria</label>
+        <select class="form-input" id="tx-cat">
+          <option>🏠 Moradia</option><option>🍔 Alimentação</option>
+          <option>🚗 Transporte</option><option>🏥 Saúde</option>
+          <option>📚 Educação</option><option>🎮 Lazer</option>
+          <option>👕 Vestuário</option><option>📱 Assinaturas</option>
+          <option>📈 Investimentos</option><option>💰 Salário</option>
+          <option>🔧 Outros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Conta</label>
+        <select class="form-input" id="tx-conta">
+          <option>Nubank</option><option>Bradesco</option><option>Inter</option>
+          <option>XP Investimentos</option><option>Dinheiro</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('tx')">Cancelar</button>
+      <button class="btn-save" onclick="saveTx()">Salvar Lançamento</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Missão -->
+<div class="modal-overlay" id="modal-mission">
+  <div class="modal">
+    <div class="modal-title">🚀 Nova Missão</div>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:span 2"><label class="form-label">Nome da Missão</label><input class="form-input" id="m-nome" type="text" placeholder="Ex: Viagem para Portugal"></div>
+      <div class="form-group"><label class="form-label">Valor Alvo (R$)</label><input class="form-input" id="m-alvo" type="number" placeholder="15000"></div>
+      <div class="form-group"><label class="form-label">Acumulado até agora (R$)</label><input class="form-input" id="m-atual" type="number" placeholder="3000"></div>
+      <div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="m-prazo" type="date"></div>
+      <div class="form-group"><label class="form-label">Aporte Mensal (R$)</label><input class="form-input" id="m-aporte" type="number" placeholder="500"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('mission')">Cancelar</button>
+      <button class="btn-save" onclick="saveMission()">Criar Missão</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// ── Data ──
+let transactions = [
+  { id:1, tipo:'income', valor:5320, data:'2026-05-01', desc:'Salário', cat:'💰 Salário', conta:'Nubank' },
+  { id:2, tipo:'expense', valor:1800, data:'2026-05-05', desc:'Aluguel', cat:'🏠 Moradia', conta:'Bradesco' },
+  { id:3, tipo:'expense', valor:320, data:'2026-05-08', desc:'Mercado', cat:'🍔 Alimentação', conta:'Nubank' },
+  { id:4, tipo:'expense', valor:180, data:'2026-05-10', desc:'Combustível', cat:'🚗 Transporte', conta:'Nubank' },
+  { id:5, tipo:'expense', valor:730, data:'2026-05-14', desc:'Restaurantes / Lazer', cat:'🎮 Lazer', conta:'Nubank' },
+  { id:6, tipo:'expense', valor:450, data:'2026-05-18', desc:'Assinaturas', cat:'📱 Assinaturas', conta:'Nubank' },
+];
+
+let missions = [
+  { nome:'Blindagem Financeira', alvo:18000, atual:9200, prazo:'2026-12-31', aporte:1000 },
+  { nome:'Viagem para Portugal', alvo:15000, atual:3800, prazo:'2027-06-01', aporte:500 },
+  { nome:'Entrada do Apartamento', alvo:80000, atual:12000, prazo:'2029-01-01', aporte:2000 },
+];
+
+const budgets = [
+  { cat:'🏠 Moradia', icon:'🏠', limit:2000, spent:1800 },
+  { cat:'🍔 Alimentação', icon:'🍔', limit:800, spent:320 },
+  { cat:'🚗 Transporte', icon:'🚗', limit:400, spent:180 },
+  { cat:'🎮 Lazer', icon:'🎮', limit:500, spent:730 },
+  { cat:'📱 Assinaturas', icon:'📱', limit:450, spent:450 },
+  { cat:'📈 Investimentos', icon:'📈', limit:1000, spent:0 },
+];
+
+const assets = [
+  { nome:'Nubank — Conta', inst:'Banco Digital', val:4200 },
+  { nome:'Tesouro Selic', inst:'XP Investimentos', val:22000 },
+  { nome:'Ações — IBOV ETF', inst:'XP Investimentos', val:18500 },
+  { nome:'CDB 110% CDI', inst:'Bradesco', val:9200 },
+  { nome:'Carro — HB20 2021', inst:'Patrimônio', val:38000 },
+];
+
+const liabilities = [
+  { nome:'Cartão Nubank', inst:'Fatura atual', val:-2800 },
+  { nome:'Financiamento HB20', inst:'36x restantes', val:-12200 },
+];
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('tx-data').value = today;
+  document.getElementById('m-prazo').value = today;
+  renderAll();
+  initCharts();
+});
+
+function renderAll() {
+  renderTxList('dash-tx-list', transactions.slice(-5));
+  renderTxList('tx-list-full', transactions);
+  renderBudget();
+  renderAssets();
+  renderMissions();
+}
+
+// ── Render Transactions ──
+function renderTxList(id, list) {
+  const el = document.getElementById(id);
+  if (!list.length) { el.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>Nenhum lançamento ainda.<br><span class="quote">"Controle começa com o primeiro registro."</span></p></div>`; return; }
+  el.innerHTML = [...list].reverse().map(t => `
+    <div class="tx-item">
+      <div class="tx-icon ${t.tipo}"><span>${t.tipo==='income'?'💚':'🔴'}</span></div>
+      <div class="tx-info">
+        <div class="tx-name">${t.desc}</div>
+        <div class="tx-cat">${t.cat} · ${t.conta}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="tx-amount ${t.tipo}">${t.tipo==='income'?'+':'-'} R$ ${t.valor.toLocaleString('pt-BR')}</div>
+        <div class="tx-date">${new Date(t.data+'T12:00:00').toLocaleDateString('pt-BR')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Render Budget ──
+function renderBudget() {
+  document.getElementById('budget-list').innerHTML = budgets.map(b => {
+    const pct = Math.round((b.spent/b.limit)*100);
+    const color = pct>=100?'red':pct>=80?'orange':'green';
+    return `<div class="budget-item">
+      <div class="budget-header">
+        <div class="budget-cat">${b.icon} ${b.cat.replace(/^.+ /,'')}</div>
+        <div class="budget-values">
+          <span class="budget-spent">R$ ${b.spent.toLocaleString('pt-BR')}</span>
+          <span class="budget-limit"> / R$ ${b.limit.toLocaleString('pt-BR')}</span>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${color}" style="width:${Math.min(pct,100)}%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">${pct}% do orçamento ${pct>100?'<span style="color:var(--red)">— ESTOURADO</span>':''}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Render Assets ──
+function renderAssets() {
+  document.getElementById('assets-list').innerHTML = assets.map(a => `
+    <div class="wealth-item">
+      <div><div class="wealth-name">${a.nome}</div><div class="wealth-inst">${a.inst}</div></div>
+      <div class="wealth-val asset">R$ ${a.val.toLocaleString('pt-BR')}</div>
+    </div>`).join('');
+  document.getElementById('liabilities-list').innerHTML = liabilities.map(l => `
+    <div class="wealth-item">
+      <div><div class="wealth-name">${l.nome}</div><div class="wealth-inst">${l.inst}</div></div>
+      <div class="wealth-val liability">R$ ${Math.abs(l.val).toLocaleString('pt-BR')}</div>
+    </div>`).join('');
+}
+
+// ── Render Missions ──
+function renderMissions() {
+  const el = document.getElementById('missions-list');
+  el.innerHTML = missions.map(m => {
+    const pct = Math.min(Math.round((m.atual/m.alvo)*100),100);
+    const prazo = new Date(m.prazo);
+    const diff = Math.ceil((prazo-new Date())/(1000*60*60*24*30));
+    const status = pct>=100?'done':diff<3?'at-risk':'on-track';
+    const statusLabel = pct>=100?'Missão cumprida 🚀':diff<3?'Missão em risco':'Missão em andamento';
+    const color = pct>=100?'gold':diff<3?'orange':'green';
+    return `<div class="mission-card">
+      <div class="mission-header">
+        <div class="mission-name">${m.nome}</div>
+        <div class="mission-status ${status}">${statusLabel}</div>
+      </div>
+      <div class="mission-values">
+        <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Acumulado</div><div class="mission-current">R$ ${m.atual.toLocaleString('pt-BR')}</div></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Meta</div><div class="mission-target">R$ ${m.alvo.toLocaleString('pt-BR')}</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${color}" style="width:${pct}%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px">
+        <div class="mission-deadline">🗓 Prazo: ${prazo.toLocaleDateString('pt-BR')}</div>
+        <div style="font-size:12px;color:var(--muted)">${pct}% concluído · Aporte: R$ ${m.aporte.toLocaleString('pt-BR')}/mês</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Charts ──
+Chart.defaults.color = '#6b6b80';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+
+function initCharts() {
+  // Line chart
+  const lc = document.getElementById('lineChart');
+  if(lc) new Chart(lc, {
+    type:'line',
+    data:{
+      labels:['Jun','Jul','Ago','Set','Out','Nov','Dez','Jan','Fev','Mar','Abr','Mai'],
+      datasets:[{
+        label:'Patrimônio',
+        data:[28000,30500,31200,33800,35100,36400,38900,40200,42100,44000,43700,47320],
+        borderColor:'#00ff87', backgroundColor:'rgba(0,255,135,0.08)',
+        tension:0.4, fill:true, pointRadius:3, pointBackgroundColor:'#00ff87'
+      }]
+    },
+    options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{
+      x:{ grid:{display:false} },
+      y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{callback:v=>'R$'+v.toLocaleString('pt-BR')} }
+    }}
+  });
+
+  // Donut chart
+  const dc = document.getElementById('donutChart');
+  if(dc) new Chart(dc, {
+    type:'doughnut',
+    data:{
+      labels:['Moradia','Alimentação','Transporte','Lazer','Outros'],
+      datasets:[{ data:[1800,980,420,730,450], backgroundColor:['#00ff87','#f5c842','#6b8cff','#ff4455','#9b59b6'], borderWidth:0, hoverOffset:4 }]
+    },
+    options:{ responsive:false, cutout:'70%', plugins:{ legend:{display:false} } }
+  });
+
+  // Bar chart
+  const bc = document.getElementById('barChart');
+  if(bc) new Chart(bc, {
+    type:'bar',
+    data:{
+      labels:['Jun','Jul','Ago','Set','Out','Nov','Dez','Jan','Fev','Mar','Abr','Mai'],
+      datasets:[
+        { label:'Receitas', data:[4800,5100,5000,5200,4900,5300,6100,5000,5100,5400,5200,5320], backgroundColor:'rgba(0,255,135,0.5)', borderRadius:4 },
+        { label:'Despesas', data:[3200,3400,3800,3500,3600,3700,4100,3300,3500,3600,3900,3480], backgroundColor:'rgba(255,68,85,0.4)', borderRadius:4 }
+      ]
+    },
+    options:{ responsive:true, plugins:{ legend:{labels:{color:'#9a9a9a'}} },
+      scales:{ x:{grid:{display:false}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>'R$'+v.toLocaleString('pt-BR')}} }
+    }
+  });
+}
+
+// ── Navigation ──
+function showScreen(id, navEl) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  if(window.innerWidth<=768) toggleSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlayBg').classList.toggle('open');
+}
+
+// ── Modal ──
+function openModal(type) {
+  document.getElementById('modal-'+type).classList.add('open');
+}
+function closeModal(type) {
+  document.getElementById('modal-'+type).classList.remove('open');
+}
+
+// ── Save Transaction ──
+function saveTx() {
+  const tipo = document.getElementById('tx-tipo').value;
+  const valor = parseFloat(document.getElementById('tx-valor').value);
+  const data = document.getElementById('tx-data').value;
+  const desc = document.getElementById('tx-desc').value;
+  const cat = document.getElementById('tx-cat').value;
+  const conta = document.getElementById('tx-conta').value;
+  if(!valor||!desc||!data) { showToast('⚠️ Preencha todos os campos'); return; }
+  transactions.push({ id: Date.now(), tipo, valor, data, desc, cat, conta });
+  closeModal('tx');
+  renderAll();
+  document.getElementById('tx-valor').value='';
+  document.getElementById('tx-desc').value='';
+  showToast('✅ Lançamento registrado. Controle é poder.');
+}
+
+// ── Save Mission ──
+function saveMission() {
+  const nome = document.getElementById('m-nome').value;
+  const alvo = parseFloat(document.getElementById('m-alvo').value);
+  const atual = parseFloat(document.getElementById('m-atual').value)||0;
+  const prazo = document.getElementById('m-prazo').value;
+  const aporte = parseFloat(document.getElementById('m-aporte').value)||0;
+  if(!nome||!alvo||!prazo) { showToast('⚠️ Preencha todos os campos'); return; }
+  missions.push({ nome, alvo, atual, prazo, aporte });
+  closeModal('mission');
+  renderMissions();
+  document.getElementById('m-nome').value='';
+  document.getElementById('m-alvo').value='';
+  document.getElementById('m-atual').value='';
+  document.getElementById('m-aporte').value='';
+  showToast('🚀 Nova missão criada. Agora vai!');
+}
+
+// ── Simulators ──
+function fmt(v) { return 'R$ '+Math.round(v).toLocaleString('pt-BR'); }
+
+function calcJuros() {
+  const p = parseFloat(document.getElementById('s1-inicial').value)||0;
+  const pmt = parseFloat(document.getElementById('s1-mensal').value)||0;
+  const r = (parseFloat(document.getElementById('s1-taxa').value)||0)/100/12;
+  const n = (parseFloat(document.getElementById('s1-prazo').value)||0)*12;
+  if(!n||!r) return;
+  const futuro = p*Math.pow(1+r,n) + pmt*((Math.pow(1+r,n)-1)/r);
+  const investido = p + pmt*n;
+  const rendimento = futuro - investido;
+  document.getElementById('r-final').textContent = fmt(futuro);
+  document.getElementById('r-investido').textContent = fmt(investido);
+  document.getElementById('r-rendimento').textContent = fmt(rendimento);
+  document.getElementById('r-quote-juros').textContent = `"Você vai ganhar ${fmt(rendimento)} sem trabalhar por isso. Isso se chama dinheiro trabalhando para você."`;
+  document.getElementById('result-juros').classList.add('show');
+}
+
+function calcLiberdade() {
+  const pat = parseFloat(document.getElementById('s2-patrimonio').value)||0;
+  const aporte = parseFloat(document.getElementById('s2-aporte').value)||0;
+  const r = (parseFloat(document.getElementById('s2-rendimento').value)||0)/100/12;
+  const gasto = parseFloat(document.getElementById('s2-gasto').value)||0;
+  if(!gasto||!r) return;
+  const patrimonioNec = gasto*12/((parseFloat(document.getElementById('s2-rendimento').value)||0)/100);
+  let p = pat, meses = 0;
+  while(p < patrimonioNec && meses < 600) { p = p*(1+r)+aporte; meses++; }
+  const renda = patrimonioNec*(parseFloat(document.getElementById('s2-rendimento').value)||0)/100/12;
+  document.getElementById('r-patrim').textContent = fmt(patrimonioNec);
+  document.getElementById('r-anos').textContent = meses>=600?'+50 anos':Math.round(meses/12)+' anos';
+  document.getElementById('r-renda').textContent = fmt(renda);
+  document.getElementById('r-quote-lib').textContent = meses<600 ? `"Em ${Math.round(meses/12)} anos, seu dinheiro trabalha por você. A missão tem data."` : `"O caminho é longo, mas cada aporte encurta a jornada."`;
+  document.getElementById('result-liberdade').classList.add('show');
+}
+
+function calcDivida() {
+  const D = parseFloat(document.getElementById('s3-divida').value)||0;
+  const r = (parseFloat(document.getElementById('s3-taxa').value)||0)/100;
+  const p1 = parseFloat(document.getElementById('s3-parcela').value)||0;
+  const p2 = parseFloat(document.getElementById('s3-nova').value)||0;
+  if(!D||!r||!p1) return;
+  function meses(d,pmt) { if(pmt<=d*r) return 9999; let saldo=d,m=0; while(saldo>0&&m<999){saldo=saldo*(1+r)-pmt;m++;} return m; }
+  const m1=meses(D,p1), m2=meses(D,p2>0?p2:p1);
+  const pago1=m1*p1, pago2=m2*(p2>0?p2:p1);
+  const economia=pago1-pago2;
+  document.getElementById('r-meses-atual').textContent = m1>=9999?'∞':m1+' meses';
+  document.getElementById('r-meses-novo').textContent = m2+' meses';
+  document.getElementById('r-economia').textContent = economia>0?fmt(economia):'—';
+  document.getElementById('r-quote-divida').textContent = economia>0?`"Pagando ${fmt(p2>0?p2:p1)}/mês, você economiza ${fmt(economia)} em juros. Dívida quitada mais rápido = dinheiro que volta para trabalhar para você."`:'"Aumente a parcela para ver a economia."';
+  document.getElementById('result-divida').classList.add('show');
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
