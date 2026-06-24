@@ -1,4 +1,4 @@
-const CACHE_NAME = 'marciano-financas-v2';
+const CACHE_NAME = 'marciano-financas-v3';
 const STATIC_FILES = [
   './',
   './index.html',
